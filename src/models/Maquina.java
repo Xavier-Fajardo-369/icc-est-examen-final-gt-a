@@ -91,9 +91,11 @@ public class Maquina {
     }
     private int calcularSubred(){
 
+
+
     }
     private int calcularRiesgo(){
-
+        
     }
     
     

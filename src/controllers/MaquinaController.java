@@ -9,8 +9,10 @@ import models.Maquina;
 
 public class MaquinaController {
 
-    public Stack<Maquina> filtrarPorSubred(List<Maquina> maquina , int umbral){
 
+    public Stack<Maquina> filtrarPorSubred(List<Maquina> maquina , int umbral){
+        Stack<Maquina> filtrar = new Stack<>();
+        
         
     }
     public Set<Maquina> ordenarPorSubred(Stack<Maquina> pila){
