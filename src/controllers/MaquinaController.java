@@ -12,40 +12,32 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Iterator;
 
 import models.Maquina;
 
 public class MaquinaController {
-
-    // Método A: filtrarPorSubred (subred < umbral), mantiene orden original, retorna Stack
     public Stack<Maquina> filtrarPorSubred(List<Maquina> maquinas, int umbral) {
-        Stack<Maquina> resultado = new Stack<>();
+        Stack<Maquina> pila = new Stack<>();
         for (Maquina m : maquinas) {
-            if (m.getSubred() < umbral) {
-                resultado.push(m);
+            if (m.getSubred() > umbral) {  // corregido menor que umbral
+                pila.push(m);
             }
         }
-        return resultado;
+        return pila;
     }
-
-    // Método B: ordenarPorSubred - TreeSet ordenado por subred DESC, nombre ASC
-    public TreeSet<Maquina> ordenarPorSubred(Stack<Maquina> pila) {
-        // Comparator: subred DESC, nombre ASC
-        Comparator<Maquina> cmp = (m1, m2) -> {
-            int cmpSubred = Integer.compare(m2.getSubred(), m1.getSubred()); // DESC
-            if (cmpSubred != 0) return cmpSubred;
+    public Set<Maquina> ordenarPorSubred(Stack<Maquina> pila) {
+        Comparator<Maquina> comp = (m1, m2) -> {
+            int cmp = Integer.compare(m2.getSubred(), m1.getSubred()); // DESC
+            if (cmp != 0) return cmp;
             return m1.getNombre().compareTo(m2.getNombre()); // ASC
         };
 
-        TreeSet<Maquina> ordenado = new TreeSet<>(cmp);
-        ordenado.addAll(pila);
-        return ordenado;
+        return new TreeSet<>(comp) {{ addAll(pila); }};
     }
 
-    // Método C: agruparPorRiesgo (TreeMap<Integer, Queue<Maquina>>)
-    public TreeMap<Integer, Queue<Maquina>> agruparPorRiesgo(List<Maquina> maquinas) {
-        TreeMap<Integer, Queue<Maquina>> mapa = new TreeMap<>();
+   
+    public Map<Integer, Queue<Maquina>> agruparPorRiesgo(List<Maquina> maquinas) {
+        Map<Integer, Queue<Maquina>> mapa = new TreeMap<>();
         for (Maquina m : maquinas) {
             int riesgo = m.getRiesgo();
             mapa.putIfAbsent(riesgo, new LinkedList<>());
@@ -54,33 +46,31 @@ public class MaquinaController {
         return mapa;
     }
 
-    // Método D: explotarGrupo - grupo con más máquinas; si empate, mayor riesgo; retorna Stack LIFO
     public Stack<Maquina> explotarGrupo(Map<Integer, Queue<Maquina>> mapa) {
-        int maxCantidad = -1;
-        int maxRiesgo = -1;
+        int maxCantidad = 0;
+        int maxRiesgo = Integer.MIN_VALUE;
         Queue<Maquina> grupoSeleccionado = null;
 
-        for (Map.Entry<Integer, Queue<Maquina>> entry : mapa.entrySet()) {
-            int riesgo = entry.getKey();
-            int cantidad = entry.getValue().size();
+        for (Integer riesgo : mapa.keySet()) {
+            Queue<Maquina> grupo = mapa.get(riesgo);
+            int cantidad = grupo.size();
 
             if (cantidad > maxCantidad || (cantidad == maxCantidad && riesgo > maxRiesgo)) {
                 maxCantidad = cantidad;
                 maxRiesgo = riesgo;
-                grupoSeleccionado = entry.getValue();
+                grupoSeleccionado = grupo;
             }
         }
 
-        Stack<Maquina> resultado = new Stack<>();
+        Stack<Maquina> pila = new Stack<>();
         if (grupoSeleccionado != null) {
-            // Para LIFO invertimos el orden de la cola
-            LinkedList<Maquina> aux = new LinkedList<>(grupoSeleccionado);
-            Iterator<Maquina> it = aux.descendingIterator();
-            while (it.hasNext()) {
-                resultado.push(it.next());
+            List<Maquina> lista = new ArrayList<>(grupoSeleccionado);
+            for (int i = lista.size() - 1; i >= 0; i--) {
+                pila.push(lista.get(i));
             }
         }
 
-        return resultado;
-    }
+        return pila;
+    }  
+
 }
