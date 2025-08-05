@@ -26,13 +26,13 @@ public class MaquinaController {
         return pila;
     }
     public Set<Maquina> ordenarPorSubred(Stack<Maquina> pila) {
-        Comparator<Maquina> comp = Comparator
-            .comparingInt(Maquina::getSubred).reversed() // subred DESC
-            .thenComparing(Maquina::getNombre);          // nombre ASC
+        Comparator<Maquina> comp = (m1, m2) -> {
+            int cmp = Integer.compare(m2.getSubred(), m1.getSubred()); // DESC
+            if (cmp != 0) return cmp;
+            return m1.getNombre().compareTo(m2.getNombre()); // ASC
+        };
 
-        TreeSet<Maquina> ordenado = new TreeSet<>(comp);
-        ordenado.addAll(pila);
-        return ordenado;
+        return new TreeSet<>(comp) {{ addAll(pila); }};
     }
 
    
