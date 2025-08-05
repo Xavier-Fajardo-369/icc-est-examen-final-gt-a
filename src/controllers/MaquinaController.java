@@ -51,30 +51,26 @@ public class MaquinaController {
         int maxRiesgo = Integer.MIN_VALUE;
         Queue<Maquina> grupoSeleccionado = null;
 
-       
-        for (Map.Entry<Integer, Queue<Maquina>> entry : mapa.entrySet()) {
-            int riesgo = entry.getKey();
-            int cantidad = entry.getValue().size();
+        for (Integer riesgo : mapa.keySet()) {
+            Queue<Maquina> grupo = mapa.get(riesgo);
+            int cantidad = grupo.size();
 
             if (cantidad > maxCantidad || (cantidad == maxCantidad && riesgo > maxRiesgo)) {
                 maxCantidad = cantidad;
                 maxRiesgo = riesgo;
-                grupoSeleccionado = entry.getValue();
+                grupoSeleccionado = grupo;
             }
         }
 
         Stack<Maquina> pila = new Stack<>();
         if (grupoSeleccionado != null) {
-            
             List<Maquina> lista = new ArrayList<>(grupoSeleccionado);
-            
             for (int i = lista.size() - 1; i >= 0; i--) {
                 pila.push(lista.get(i));
             }
         }
 
         return pila;
-    }
-        
+    }  
 
 }
