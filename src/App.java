@@ -10,6 +10,26 @@ import models.Maquina;
 public class App {
     public static void main(String[] args) throws Exception {
         List<Maquina> maquinas = crearMaquinas();
+        MaquinaController controller = new MaquinaController();
+
+        System.out.println("Metodo A - filtrarPorSubred > 100:");
+        Stack<Maquina> pila = controller.filtrarPorSubred(maquinas, 100);
+        pila.forEach(System.out::println);
+
+        System.out.println("Metodo B - ordenarPorSubred:");
+        Set<Maquina> ordenado = controller.ordenarPorSubred(pila);
+        ordenado.forEach(System.out::println);
+
+        System.out.println("Metodod C - agruparPorRiesgo:");
+        Map<Integer, Queue<Maquina>> mapa = controller.agruparPorRiesgo(maquinas);
+        mapa.forEach((riesgo, cola) -> {
+            System.out.println("Riesgo " + riesgo + " → " + cola);
+        });
+
+        System.out.println("Metodo D - explotarGrupo:");
+        Stack<Maquina> grupoMayor = controller.explotarGrupo(mapa);
+        grupoMayor.forEach(System.out::println);
+        
 
     }
 
@@ -67,21 +87,7 @@ public class App {
                 new Maquina("Nodo6", "169.238.150.174", Arrays.asList(6, 14, 3)),
                 new Maquina("DB13", "71.248.50.86", Arrays.asList(17, 11, 12)) 
                 );
-                MaquinaController controller = new MaquinaController();
-                System.out.println("Metodo A - filtrarPorSubred > 100:");
-                Stack<Maquina> pila = controller.filtrarPorSubred(maquinas, 100);
-                pila.forEach(System.out::println);
-                System.out.println("Metodo B - ordenarPorSubred:");
-                Set<Maquina> ordenado = controller.ordenarPorSubred(pila);
-                ordenado.forEach(System.out::println);
-                System.out.println("Metodod C - agruparPorRiesgo:");
-                Map<Integer,Queue<Maquina>> mapa = controller.agruparPorRiesgo(maquinas);
-                mapa.forEach((riesgo,cola) -> {
-                    System.out.println("Riesgo"+ riesgo + "→" + cola);
-                });
-                System.out.println("Metodo D - explotarGrupo:");
-                Stack<Maquina> grupoMayor = controller.explorarGrupo(mapa);
-                grupoMayor.forEach(System.out::println);
+                
 
         return maquinas;
         
