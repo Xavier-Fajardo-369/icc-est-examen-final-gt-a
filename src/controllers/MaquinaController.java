@@ -27,14 +27,15 @@ public class MaquinaController {
     }
     public Set<Maquina> ordenarPorSubred(Stack<Maquina> pila) {
         Comparator<Maquina> comp = Comparator
-            .comparingInt(Maquina::getSubred)
-            .thenComparing(Maquina::getNombre);
-    
+            .comparingInt(Maquina::getSubred).reversed() // subred DESC
+            .thenComparing(Maquina::getNombre);          // nombre ASC
+
         TreeSet<Maquina> ordenado = new TreeSet<>(comp);
         ordenado.addAll(pila);
         return ordenado;
     }
 
+   
     public Map<Integer, Queue<Maquina>> agruparPorRiesgo(List<Maquina> maquinas) {
         Map<Integer, Queue<Maquina>> mapa = new TreeMap<>();
         for (Maquina m : maquinas) {
