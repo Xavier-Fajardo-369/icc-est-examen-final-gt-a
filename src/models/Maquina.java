@@ -1,7 +1,10 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class Maquina {
     private String nombre;
@@ -11,94 +14,66 @@ public class Maquina {
     private int riesgo;
 
     public Maquina(String nombre, String ip, List<Integer> codigos) {
+        if (nombre == null || ip == null || codigos == null) {
+            throw new IllegalArgumentException("Argumentos no pueden ser nulos");
+        }
         this.nombre = nombre;
         this.ip = ip;
-        this.codigos = codigos;
+        this.codigos = new ArrayList<>(codigos);
         this.subred = calcularSubred();
         this.riesgo = calcularRiesgo();
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-    public void setIp(String ip) {
-        this.ip = ip;
-        this.subred = calcularSubred(); // recalcula subred si cambia ip
-    }
-
-    public List<Integer> getCodigos() {
-        return codigos;
-    }
-    public void setCodigos(List<Integer> codigos) {
-        this.codigos = codigos;
-        this.riesgo = calcularRiesgo(); // recalcula riesgo si cambian codigos
-    }
-
-    public int getSubred() {
-        return subred;
-    }
-    public void setSubred(int subred) {
-        this.subred = subred;
-    }
-
-    public int getRiesgo() {
-        return riesgo;
-    }
-    public void setRiesgo(int riesgo) {
-        this.riesgo = riesgo;
-    }
+    public String getNombre() { return nombre; }
+    public String getIp() { return ip; }
+    public List<Integer> getCodigos() { return new ArrayList<>(codigos); }
+    public int getSubred() { return subred; }
+    public int getRiesgo() { return riesgo; }
 
     @Override
-    public String toString() {
-        return "Maquina [nombre=" + nombre + ", ip=" + ip + ", codigos=" + codigos + ", subred=" + subred + ", riesgo=" + riesgo + "]";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Maquina)) return false;
+        Maquina m = (Maquina) o;
+        return subred == m.subred && nombre.equals(m.nombre);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nombre, ip);
+        return Objects.hash(nombre, subred);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof Maquina))
-            return false;
-        Maquina other = (Maquina) obj;
-        return Objects.equals(nombre, other.nombre) && Objects.equals(ip, other.ip);
+    public String toString() {
+        return String.format("Maquina[nombre=%s, ip=%s, subred=%d, riesgo=%d]",
+                nombre, ip, subred, riesgo);
     }
+
+    // --- Implementación según README ---
 
     private int calcularSubred() {
         String[] partes = ip.split("\\.");
         if (partes.length != 4) {
-            throw new IllegalArgumentException("IP inválida");
+            throw new IllegalArgumentException("IP inválida: " + ip);
         }
-        int subredSum = 0;
-        for (String parte : partes) {
-            subredSum += Integer.parseInt(parte);
-        }
-        return subredSum % 256;
+        return Integer.parseInt(partes[3]);
     }
 
     private int calcularRiesgo() {
-        int riesgo = 0;
-        for (int codigo : codigos) {
-            if (codigo >= 100 && codigo < 200) {
-                riesgo += 1; // Riesgo bajo
-            } else if (codigo >= 200 && codigo < 300) {
-                riesgo += 2; // Riesgo medio
-            } else if (codigo >= 300) {
-                riesgo += 3; // Riesgo alto
+        int sumaDiv5 = 0;
+        for (int c : codigos) {
+            if (c % 5 == 0) {
+                sumaDiv5 += c;
             }
         }
-        return riesgo;
+
+        Set<Character> unicos = new HashSet<>();
+        for (char ch : nombre.toCharArray()) {
+            if (ch != ' ') {
+                unicos.add(ch);
+            }
+        }
+
+        return sumaDiv5 * unicos.size();
     }
 }
-
