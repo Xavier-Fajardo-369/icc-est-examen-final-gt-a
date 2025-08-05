@@ -2,6 +2,7 @@ package controllers;
 
 
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import java.util.LinkedList;
@@ -50,6 +51,7 @@ public class MaquinaController {
         int maxRiesgo = Integer.MIN_VALUE;
         Queue<Maquina> grupoSeleccionado = null;
 
+       
         for (Map.Entry<Integer, Queue<Maquina>> entry : mapa.entrySet()) {
             int riesgo = entry.getKey();
             int cantidad = entry.getValue().size();
@@ -63,12 +65,16 @@ public class MaquinaController {
 
         Stack<Maquina> pila = new Stack<>();
         if (grupoSeleccionado != null) {
-            List<Maquina> lista = new LinkedList<>(grupoSeleccionado);
+            
+            List<Maquina> lista = new ArrayList<>(grupoSeleccionado);
+            
             for (int i = lista.size() - 1; i >= 0; i--) {
                 pila.push(lista.get(i));
             }
         }
+
         return pila;
     }
+        
 
 }
