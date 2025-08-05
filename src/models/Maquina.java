@@ -49,15 +49,15 @@ public class Maquina {
                 nombre, ip, subred, riesgo);
     }
 
-    // --- Implementación según README ---
+    
 
     private int calcularSubred() {
         String[] partes = ip.split("\\.");
         if (partes.length != 4) {
             throw new IllegalArgumentException("IP inválida: " + ip);
         }
-        return Integer.parseInt(partes[3]);
-    }
+        return Integer.parseInt(partes[2]);  
+    }   
 
     private int calcularRiesgo() {
         int sumaDiv5 = 0;
