@@ -19,7 +19,7 @@ public class MaquinaController {
     public Stack<Maquina> filtrarPorSubred(List<Maquina> maquinas, int umbral) {
         Stack<Maquina> pila = new Stack<>();
         for (Maquina m : maquinas) {
-            if (m.getSubred() > umbral) {  // corregido menor que umbral
+            if (m.getSubred() < umbral) {  // corregido menor que umbral
                 pila.push(m);
             }
         }
